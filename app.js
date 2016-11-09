@@ -22,7 +22,6 @@ app.use(flash());
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-console.log();
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,9 +36,16 @@ app.use(session({
     db:settings.db,
     host:settings.host,
     port:settings.port,
-    url: 'mongodb://localhost/blog'
+    url: 'mongodb://localhost/blog',
   })
 }));
+
+// app.use(multer({      //新版不支持改写法
+//   dest:'./public/images',
+//   rename:function(fieldname,filename){
+//     return filename;
+//   }
+// }))
 
 routes(app);
 

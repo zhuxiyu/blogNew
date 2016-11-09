@@ -11,3 +11,7 @@ npm install -g supervisor
 
 4.页面通知功能
 npm install connect-flash --save
+
+5.inspector调试
+node-debug app.js //有ref报错
+可以使用node --inspect --debug-brk app.js来调试
