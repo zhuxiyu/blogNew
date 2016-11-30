@@ -4,17 +4,16 @@ var crypto = require('crypto'),
     multer = require('multer'); //图片上传
 var storage = multer.diskStorage({
       destination: function (req, file, cb) {
-        cb(null, './public/images')
+        cb(null, '../public/images')
       },
       filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now())
       }
     })
 var upload = multer({ storage: storage });
-// var upload = multer({ dest: './public/images' })
 module.exports = function (app) {
   app.get('/',function (req,res) {
-    Post.get(null,function(err,posts){
+    Post.getAll(null,function(err,posts){
       if(err){
         posts = [];
       }
@@ -126,7 +125,7 @@ module.exports = function (app) {
   });
 
   app.post('/post',checkLogin);
-  app.post('/post',upload.single(),function (req,res) {
+  app.post('/post',function (req,res) {
     var currentUser = req.session.user,
         post = new Post(currentUser.name,req.body.title,req.body.post);
     post.save(function(err){
@@ -156,12 +155,52 @@ module.exports = function (app) {
     })
   });
   app.post('/upload',checkLogin);  //上传
-  app.post('/upload',upload.single(),function (req,res,next) {
+  app.post('/upload',upload.single("file1"),function (req,res,next) {
     console.log(req.file);
     console.log(req.body);
     req.flash('success','文件上传成功！');
     res.redirect('/upload');
   });
+
+  app.get('/u/:name',function(req,res){
+    //检查用户是否存在
+    User.get(req.parmas.name,function(err,user){
+      if(!user){
+        req.flash('error','用户不存在！');
+        return res.redirect('/');//用户不存在则跳转到主页
+      }
+      //查询并返回该用户的所有文章
+      Post.getAll(user.name,function(err,posts){
+        if(err){
+          req.flash('error',err);
+          return res.redirect('/');
+        }
+        res.render('user',{
+          title:user.name,
+          posts:posts,
+          user:req.session.user,
+          success:req.flash('success').toString(),
+          error:req.flash('error').toString()
+        })
+      })
+    })
+  })
+
+  app.get('/u/:name/:day/:title',function(req,res){
+    Post.getOne(req.parmas.name,req.parmas.day,req.parmas.title,function(err,post){
+      if(err){
+        req.flash('error',err);
+        return res.redirect('/');
+        res.render('article',{
+          title:req.parmas.title,
+          posts:post,
+          user:req.session.user,
+          success:req.flash('success').toString(),
+          error:req.flash('error').toString()
+        })
+      }
+    })
+  })
 
   function checkLogin(req,res,next) {
     if(!req.session.user){
