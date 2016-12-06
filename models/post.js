@@ -162,3 +162,8 @@ app.get('/edit/:name/:day/:title',function(req, res) {
 		})
 	})
 })
+
+//更新一篇文章及其相关信息
+Post.update=function(name,day,title,post,callback){
+	
+}
