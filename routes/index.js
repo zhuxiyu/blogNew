@@ -164,7 +164,7 @@ module.exports = function (app) {
 
   app.get('/u/:name',function(req,res){
     //检查用户是否存在
-    User.get(req.parmas.name,function(err,user){
+    User.get(req.params.name,function(err,user){
       if(!user){
         req.flash('error','用户不存在！');
         return res.redirect('/');//用户不存在则跳转到主页
@@ -187,18 +187,18 @@ module.exports = function (app) {
   })
 
   app.get('/u/:name/:day/:title',function(req,res){
-    Post.getOne(req.parmas.name,req.parmas.day,req.parmas.title,function(err,post){
+    Post.getOne(req.params.name,req.params.day,req.params.title,function(err,post){
       if(err){
         req.flash('error',err);
         return res.redirect('/');
-        res.render('article',{
-          title:req.parmas.title,
-          posts:post,
-          user:req.session.user,
-          success:req.flash('success').toString(),
-          error:req.flash('error').toString()
-        })
       }
+      res.render('article',{
+        title:req.params.title,
+        post:post,
+        user:req.session.user,
+        success:req.flash('success').toString(),
+        error:req.flash('error').toString()
+      })
     })
   })
 
