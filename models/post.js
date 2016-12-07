@@ -145,25 +145,64 @@ Post.edit = function(name, day, title, callback){
 	})
 }
 
-app.get('/edit/:name/:day/:title',checkLogin);
-app.get('/edit/:name/:day/:title',function(req, res) {
-	var currentUser = req.session.user;
-	Post.edit(currentUser.name,req.params.day,req.params.title,function(err,post){
-		if(err){
-			req.flash('error',err);
-			return res.redirect('back');
-		}
-		res.render('edit',{
-			title:'编辑',
-			post:post,
-			user:req.session.user,
-			success:req.flash('success').toString(),
-			error:req.flash('error').toString();
-		})
-	})
-})
-
 //更新一篇文章及其相关信息
 Post.update=function(name,day,title,post,callback){
-	
+	//打开数据库
+	mongodb.open(function(err,db){
+		if(err){
+			return callback(err);
+		}
+		//读取posts集合
+		db.collection('posts',function(err,collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			//更新文章内容
+			collection.update({
+				"name":name,
+				"time.day":day,
+				"title":title
+			},{
+				$set:{post:post}
+			},function(err){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null);
+			})
+		})
+	})
+}
+
+//删除一篇文章
+Post.remove = function(name, day, title, callback){
+	//打开数据库
+	mongodb.open(function(err, db){
+		if(err){
+			return callback(err);
+		}
+		//读取posts集合
+		db.collection('posts', function(err, collection){
+			if(err){
+				mongodb.close();
+				return callback(err);
+			}
+			//根据用户名、日期和标题查找并删除一篇文章
+			collection.remove({
+				"name":name,
+				"time.day":day,
+				"title":title
+			},{
+				w:1
+			},function(err){
+				mongodb.close();
+				if(err){
+					return callback(err);
+				}
+				callback(null);
+			})
+		})
+	})
 }
