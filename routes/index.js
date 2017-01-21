@@ -192,7 +192,7 @@ module.exports = function (app) {
         req.flash('error',err);
         return res.redirect('/')
       }
-      res.render('tag',{
+      res.render('tags',{
         title:'标签',
         posts:posts,
         user:req.session.user,
@@ -202,6 +202,38 @@ module.exports = function (app) {
     })
   });
 
+  app.get('/tags/:tag',function (req,res) {
+      Post.getTag(req.params.tag,function (err,posts) {
+          if(err){
+              req.flash('error',err);
+              return res.redirect('/');
+          }
+          res.render('tag',{
+              title:'TAG' + req.params.tag,
+              posts:posts,
+              user:req.session.user,
+              success:req.flash('success').toString(),
+              error:req.flash('error').toString()
+          })
+      })
+  });
+
+  app.get('/search',function (req,res) {
+     Post.search(req.query.keyword,function(err,posts){
+        if(err){
+          req.flash("error",err);
+          return res.redirect('/')
+        }
+        res.render('search',{
+            title:"SEARCH:"+req.query.keyword,
+            posts:posts,
+            user:req.session.user,
+            success:req.flash('success').toString(),
+            error:req.flash('error').toString()
+        })
+     })
+  });
+  
   app.get('/u/:name',function(req,res){
     var page = req.query.p ? parseInt(req.query.p):1;
     //检查用户是否存在
@@ -284,7 +316,7 @@ module.exports = function (app) {
   app.post('/edit/:name/:day/:title',function(req,res){
     var currentUser = req.session.user;
     Post.update(currentUser.name, req.params.day, req.params.title,req.body.post, function(err){
-      var url = encodeURI('/u/' + req.params.name + '/' + req.params.day + '' +req.params.title);
+      var url = encodeURI('/u/' + req.params.name + '/' + req.params.day + '/' +req.params.title);
       if(err){
         req.flash('error',err);
         return res.redirect(url); //出错！返回文章页
