@@ -135,7 +135,7 @@ module.exports = function (app) {
   app.post('/post',function (req,res) {
     var currentUser = req.session.user,
         tags = [req.body.tag1,req.body.tag2,req.body.tag3],
-        post = new Post(currentUser.name,req.body.title,tags,req.body.post);
+        post = new Post(currentUser.name,currentUser.head,req.body.title,tags,req.body.post);
     post.save(function(err){
       if(err){
         req.flash('error',err);
@@ -218,6 +218,15 @@ module.exports = function (app) {
       })
   });
 
+  app.get('/links',function(req,res){
+    res.render('links',{
+      title: '友情链接',
+      user: req.session.user,
+      success: req.flash('success').toString(),
+      error: req.flash('error').toString()
+    })
+  })
+
   app.get('/search',function (req,res) {
      Post.search(req.query.keyword,function(err,posts){
         if(err){
@@ -276,6 +285,10 @@ module.exports = function (app) {
         error:req.flash('error').toString()
       })
     })
+  })
+
+  app.use(function(req,res){
+    res.render("404");
   })
 
   function checkLogin(req,res,next) {
@@ -342,9 +355,12 @@ module.exports = function (app) {
   app.post('/u/:name/:day/:title', function(req, res){
     var date = new Date(),
       time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + (date.getMinutes() < 10? "0" + date.getMinutes() : date.getMinutes());
-      console.log(req.body.website,"999899890890890998");
+    var md5 = crypto.createHash('md5'),
+        email_MD5 = md5.update(req.body.email.toLowerCase()).digest('hex'),
+        head = "http://www.gravatar.com/avatar/"+email_MD5 + "?s=48";
     var comment = {
       name:req.body.name,
+      head:head,
       email:req.body.email,
       website:req.body.website,
       time:time,

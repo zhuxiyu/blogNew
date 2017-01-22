@@ -1,7 +1,8 @@
 var mongodb = require('./db'),
 	markdown = require("markdown").markdown;
-function Post(name,title,tags,post){
+function Post(name,head,title,tags,post){
 	this.name = name;
+	this.head = head;
 	this.title = title;
 	this.tags = tags;
 	this.post = post;
@@ -21,11 +22,13 @@ Post.prototype.save = function(callback) {
 	//要存入数据库的文档
 	var post ={
 		name:this.name,
+		head:this.head,
 		time:time,
 		title:this.title,
 		tags: this.tags,
 		post:this.post,
 		comments:[],
+		reprint_info:{},   //转载功能和转载统计
 		pv:0
 	};
 
@@ -329,7 +332,7 @@ Post.search = function (keyword,callback) {
 		if(err){
 			return callback(err);
 		}
-		db.collection('post',function(err,collection){
+		db.collection('posts',function(err,collection){
 			if(err){
 				mongodb.close();
 				return callback(err);
@@ -353,3 +356,8 @@ Post.search = function (keyword,callback) {
 		})
     })	
 };
+
+//转载一篇文章
+Post.reprint = function(reprint_from,reprint_to,callback){
+
+}
