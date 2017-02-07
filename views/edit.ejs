@@ -3,10 +3,10 @@
 	标题：<br/>
 	<input type="text" name="title" value="<%= post.title %>" /><br/>
 	标签：<br/>
-	<%if(!post.tag){post.tag=[]}%>
-	<input type="text" name="tag1" value="<%= post.tag[0] %>" /><br/>
-	<input type="text" name="tag2" value="<%= post.tag[1] %>" /><br/>
-	<input type="text" name="tag3" value="<%= post.tag[2] %>" /><br/>
+	<%if(!post.tags){post.tags=[]}%>
+	<input type="text" name="tag1" value="<%= post.tags[0] %>" /><br/>
+	<input type="text" name="tag2" value="<%= post.tags[1] %>" /><br/>
+	<input type="text" name="tag3" value="<%= post.tags[2] %>" /><br/>
 	正文：<br/>
 	<textarea name="post" cols="100" rows="20"><%= post.post %></textarea><br/>
 	<input type="submit" value="保存修改"/>
