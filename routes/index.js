@@ -2,10 +2,7 @@ var crypto = require('crypto'),
     User = require('../models/user.js'),
     Post = require('../models/post.js'),
     Comment = require('../models/comment.js'),
-    multer = require('multer'), //图片上传
-    https = require('https'),
-    iconv = require('iconv-lite'),
-    request = require('request');
+    multer = require('multer'); //图片上传;
 var storage = multer.diskStorage({
       destination: function (req, file, cb) {
         cb(null, '../public/images')
@@ -18,44 +15,6 @@ var upload = multer({ storage: storage });
 module.exports = function (app) {
   app.get('/',function (req,res) {
     //判断是否是第一页，并把请求的页数转成 number 类型
-    res.type('application/json');   // => 'application/json'
-    // https.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxa50dfb4286c1475a&secret=303143e32ff3b1c4c25961321c437f6a", function(Res){
-    //     var Data = "",
-    //         chunks = [],
-    //         size = 0;
-    //     Res.on("data", function(chunk){
-    //         // Data+=chunk.toString('utf8');
-    //         chunks.push(chunk);
-    //         size += chunk.length;
-    //     });
-    //     Res.on("end", function(){
-    //         try{
-    //             var buf = Buffer.concat(chunks,size);
-    //             Data = iconv.decode(buf,'utf8');
-    //             Data = JSON.parse(Data);
-    //             console.log(Data,'--------------------------------')
-    //             res.end(Data);
-    //         }catch(e){
-    //             //跳转到404页面
-    //             console.log("请求里面出错" + e.message);
-    //             res.end('err');
-    //         }
-    //     });
-    // }).on('error', function(e) {
-    //     res.end('err');
-    //     console.log("请求外面出错" + e.message);
-    // });
-    var url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxa50dfb4286c1475a&secret=303143e32ff3b1c4c25961321c437f6a";
-    request.get(url, function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body,'---------------------------------');
-        res.end(body);
-      } else {
-        console.log("失败");
-      }
-    });
-    // res.end('success');
-    return false;
     var page = req.query.p ? parseInt(req.query.p):1;
     //查询并返回第 page 页的 10 篇文章
     Post.getTen(null, page, function(err, posts, total){
