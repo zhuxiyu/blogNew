@@ -417,7 +417,6 @@ Post.reprint = function(reprint_from,reprint_to,callback){
 					return callback(err);
 				}
 				var date = new Date();
-				console.log(doc,"---------------------------");
 				var time = {
 					date:date,
 					year:date.getFullYear(),
@@ -425,7 +424,6 @@ Post.reprint = function(reprint_from,reprint_to,callback){
 					day: date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate(),
 					minute:  date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + "" + date.getHours() + ":" + (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes())
 				};
-				console.log(time);
 				delete doc._id;//注意要删除原来的 _id
 
 				doc.name = reprint_to.name;
@@ -460,12 +458,11 @@ Post.reprint = function(reprint_from,reprint_to,callback){
 				collection.insert(doc,{
 					safe:true
 				},function(err,post){
-					console.log(post[0],'---------------------------------------');
 					mongodb.close();
 					if(err){
 						return callback(err);
 					}
-					callback(err,post[0]);
+					callback(err,post.ops[0]);
 				})
 			})
 		})

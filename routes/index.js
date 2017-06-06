@@ -309,7 +309,6 @@ module.exports = function (app) {
   app.post('/edit/:name/:day/:title',function(req,res){
     var currentUser = req.session.user;
     var tags = [req.body.tag1,req.body.tag2,req.body.tag3];
-    console.log(tags,'---------------------------------');
     Post.update(currentUser.name, req.params.day, req.params.title,req.body.post,tags,function(err){
       var url = encodeURI('/u/' + req.params.name + '/' + req.params.day + '/' +req.params.title);
       if(err){
@@ -344,14 +343,12 @@ module.exports = function (app) {
       var currentUser = req.session.user,
           reprint_from = {name:post.name,day:post.time.day,title:post.title},
           reprint_to = {name:currentUser.name,head:currentUser.head};
-      console.log(reprint_from,reprint_to);
       Post.reprint(reprint_from,reprint_to,function(err,post){
         if(err){
           req.flash("error",err);
           return res.redirect('back');
         }
         req.flash('success','转载成功!');
-        console.log(post,'-------------------------------------------');
         var url = encodeURI('/u/' + post.name + '/' + post.time.day + '/' + post.title);
         //跳转到转载后的文章页面
         res.redirect(url);
