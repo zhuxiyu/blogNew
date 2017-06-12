@@ -163,10 +163,11 @@ module.exports = function (app) {
     })
   });
   app.post('/upload',checkLogin);  //上传
-  app.post('/upload',upload.single("file1"),function (req,res,next) {
-    console.log(req.file);
+  app.post('/upload',upload.array(),function (req,res) {
+    console.log(upload.array());
+    console.log(req.files);
     console.log(req.body);
-    req.flash('success','文件上传成功！');
+    req.flash('success','文件上传成功了！');
     res.redirect('/upload');
   });
 
