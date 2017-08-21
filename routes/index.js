@@ -2,10 +2,22 @@ var crypto = require('crypto'),
     User = require('../models/user.js'),
     Post = require('../models/post.js'),
     Comment = require('../models/comment.js'),
+    fs = require('fs'),
     multer = require('multer'); //图片上传;
+
+var createFolder = function(folder){
+    try{
+        fs.accessSync(folder); 
+    }catch(e){
+        fs.mkdirSync(folder);
+    }  
+};
+var uploadFolder = './public/images';
+createFolder(uploadFolder);
+
 var storage = multer.diskStorage({
       destination: function (req, file, cb) {
-        cb(null, '../public/images')
+        cb(null, uploadFolder)
       },
       filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now())
@@ -163,10 +175,7 @@ module.exports = function (app) {
     })
   });
   app.post('/upload',checkLogin);  //上传
-  app.post('/upload',upload.array(),function (req,res) {
-    console.log(upload.array());
-    console.log(req.files);
-    console.log(req.body);
+  app.post('/upload',upload.single('logo'),function (req,res) {
     req.flash('success','文件上传成功了！');
     res.redirect('/upload');
   });
