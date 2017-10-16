@@ -13,6 +13,8 @@ var users = require('./routes/users');
 var settings = require('./settings');
 
 var app = express();
+var passport = require('passport'),
+  GithubStrategy = require('passport-github').Strategy;
 var fs = require('fs');
 var accessLog = fs.createWriteStream('access.log',{flag:'a'});
 var errorLog = fs.createWriteStream('error.log',{flag:'a'});
@@ -54,7 +56,14 @@ app.use(session({
 //     return filename;
 //   }
 // }))
-
+app.use(passport.initialize()); //初始化 passport
+passport.use(new GithubStrategy({
+  clientID:"7f684eea3d0931076c10",
+  clientSecret:"c744ea1cf48b8be9be7f7bdfeb6018cfc8e79d60",
+  callbackURL:"http://localhost:3000/login/github/callback"
+},function(accessToken, refreshToken, profile, done){
+  done(null,profile);
+}))
 routes(app);
 
 app.listen(app.get('port'),function () {

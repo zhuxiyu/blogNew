@@ -3,7 +3,8 @@ var crypto = require('crypto'),
     Post = require('../models/post.js'),
     Comment = require('../models/comment.js'),
     fs = require('fs'),
-    multer = require('multer'); //图片上传;
+    multer = require('multer'), //图片上传;
+    passport = require('passport');
 
 var createFolder = function(folder){
     try{
@@ -108,6 +109,16 @@ module.exports = function (app) {
       success:req.flash('success').toString(),
       error:req.flash('error').toString()
     });
+  });
+
+  app.get("/login/github",passport.authenticate("github",{session:false}));
+  app.get("/login/github/callback",passport.authenticate("github",{
+    session:false,
+    failureRedirect: '/login',
+    successFlash: '登录成功？'
+  }),function(req, res){
+    req.session.user = {name:req.user.username, head: "https://gravatar.com/avatar/" + req.user._json.gravatar_id + "?s=48"};
+    res.redirect("/");
   });
 
   app.post('/login',checkNotLogin);
