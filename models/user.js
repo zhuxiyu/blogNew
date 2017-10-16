@@ -2,7 +2,9 @@
  * Created by zxy on 8/9/16.
  */
 var crypto = require('crypto');
-var mongodb = require('./db');
+// var mongodb = require('./db');
+var mongodb = require('mongodb').MongoClient;
+var settings = require('../settings');
 function User(user) {
     this.name = user.name;
     this.password = user.password;
@@ -24,21 +26,24 @@ User.prototype.save = function (callback) {
         head:head
     };
     //打开数据库
-    mongodb.open(function (err,db) {
+    // mongodb.open(function (err,db) {
+    mongodb.connect(settings.url,function(err,db){
         if(err){
             return callback(err);
         }
         //读取users集合
         db.collection('users',function (err,collection) {
             if(err){
-                mongodb.close();
+                // mongodb.close();
+                db.close();
                 return callback(err);
             }
             //将用户数据插入user集合
             collection.insert(user,{
                 safe:true
             },function(err,user){
-                mongodb.close();
+                // mongodb.close();
+                db.close();
                 if(err){
                     return callback(err);
                 }
@@ -51,20 +56,23 @@ User.prototype.save = function (callback) {
 //读取用户信息
 User.get = function (name,callback) {
     //打开数据库
-    mongodb.open(function (err,db) {
+    // mongodb.open(function (err,db) {
+    mongodb.connect(settings.url,function(err,db){
         if(err){
             return callback(err);
         }
         db.collection('users',function (err,collection) {
             if(err){
-                mongodb.close();
+                // mongodb.close();
+                db.close();
                 return callback(err);
             }
             //查找用户名（name键）值为name一个文档
             collection.findOne({
                 name:name
             },function (err,user) {
-                mongodb.close();
+                // mongodb.close();
+                db.close();
                 if(err){
                     return callback(err)
                 }

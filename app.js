@@ -38,17 +38,24 @@ app.use(function (err, req, res, next) {
     next();
 })
 
+//数据库
+// app.use(session({
+//   secret:settings.cookieSecret,
+//   key:settings.db,//cookie name
+//   cookie:{maxAge:1000*60*60*24*30},//30 days
+//   store:new MongoStore({
+//     db:settings.db,
+//     host:settings.host,
+//     port:settings.port,
+//     url: 'mongodb://localhost/blog',
+//   })
+// }));
+
 app.use(session({
   secret:settings.cookieSecret,
-  key:settings.db,//cookie name
-  cookie:{maxAge:1000*60*60*24*30},//30 days
-  store:new MongoStore({
-    db:settings.db,
-    host:settings.host,
-    port:settings.port,
-    url: 'mongodb://localhost/blog',
-  })
-}));
+  cookie:{maxAge:1000*60*60*24*30},
+  url:settings.url
+}))
 
 // app.use(multer({      //新版不支持改写法
 //   dest:'./public/images',
