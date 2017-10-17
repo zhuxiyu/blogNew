@@ -1,6 +1,6 @@
 // var mongodb = require('./db'),
 var mongodb = require('mongodb').MongoClient,
-	markdown = require("markdown").markdown,
+	// markdown = require("markdown").markdown,
 	settings = require('../settings');
 function Post(name,head,title,tags,post){
 	this.name = name;
@@ -97,9 +97,9 @@ Post.getTen = function(name, page, callback){
 						return callback(err);
 					}
 					//解析 markdown 为 html
-					docs.forEach(function(doc){
-						doc.post = markdown.toHTML(doc.post);
-					});
+					// docs.forEach(function(doc){
+					// 	doc.post = markdown.toHTML(doc.post);
+					// });
 					callback(null, docs, total);
 				});
 			})
@@ -150,10 +150,10 @@ Post.getOne = function(name,day,title,callback){
 						}
 					});
 					//解析markdown 为 html
-                    doc.post = markdown.toHTML(doc.post);
-                    doc.comments.forEach(function(comment){
-                        comment.content = markdown.toHTML(comment.content);
-                    });
+                    // doc.post = markdown.toHTML(doc.post);
+                    // doc.comments.forEach(function(comment){
+                    //     comment.content = markdown.toHTML(comment.content);
+                    // });
                     callback(null,doc);//返回查询的文章
 				}
 			})

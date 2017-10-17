@@ -4,6 +4,14 @@
     <meta charset="UTF-8"/>
     <title>Blog</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <script charset="utf-8" src="/kindEditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="/kindEditor/zh-CN.js"></script>
+    <script>
+        var editor;
+        KindEditor.ready(function(K){
+            editor = K.create('textarea');
+        });
+    </script>
 </head>
 <body>
 <header>
